@@ -79,8 +79,10 @@
       callback(null, true)
     }],
     globalStyle: ['envStyle', function (results, callback) {
-      console.log(fs.readdirSync(self.dir + '/client/styles/global.style.scss'))
-      console.log(self.dir + '/client/styles/global.style.scss', ' DIR')
+      console.log(path.join(self.dir + '/client/styles/global.style.scss'), ' DIR')
+      console.log(fs.readdirSync(path.join(self.dir + '/client/styles/')), 't\n  tt')
+
+      console.log(fs.readFileSync(path.join(self.dir + '/client/styles/global.style.scss'), 'utf8'), 'test\ntest')
       var globalContents = fs.readFileSync(self.dir + '/client/styles/global.style.scss', 'utf8')
       console.log('readFile')
       var result = sass.renderSync({
