@@ -62,8 +62,92 @@
       require('./server/error.js')(self)
       callback(null, true)
     },
+    routes: function (callback) {
+      mongoose.model('blog', require('./server/modules/blog/blog.model.js'))
+      mongoose.model('users', require('./server/modules/users/users.model.js'))
+      require('./server/modules/users/users.routes.js')(self.app, self.middleware, self.mail, self.settings)
+      require('./server/modules/blog/blog.routes.js')(self.app, self.middleware, self.mail, self.settings)
 
-    envStyle: function (callback) {
+      callback(null, true)
+    },
+    staticRoutes: function (callback) {
+      self.app.use(express.static(path.join(__dirname, './client/'), {
+        maxAge: 31557600000
+      }))
+      self.app.get('/api/*', function (req, res) {
+        res.status(400).send({
+          error: 'nothing found in api'
+        })
+      })
+      self.app.get('/bower_components/*', function (req, res) {
+        res.status(400).send({
+          error: 'nothing found in bower_components'
+        })
+      })
+      self.app.get('/images/*', function (req, res) {
+        res.status(400).send({
+          error: 'nothing found in images'
+        })
+      })
+      self.app.get('/scripts/*', function (req, res) {
+        res.status(400).send({
+          error: 'nothing found in scripts'
+        })
+      })
+      self.app.get('/styles/*', function (req, res) {
+        res.status(400).send({
+          error: 'nothing found in styles'
+        })
+      })
+      self.app.get('/uploads/*', function (req, res) {
+        res.status(400).send({
+          error: 'nothing found in uploads'
+        })
+      })
+      // Primary app routes
+      self.app.get('/*', function (req, res) {
+        if (_.isUndefined(req.user)) {
+          req.user = {}
+          req.user.authenticated = false
+        } else {
+          req.user.authenticated = true
+        }
+        var html = self.settings.html
+        if (self.settings.seo[req.path]) {
+          if (self.settings.seo[req.path].title) html.title = self.settings.seo[req.path].title
+          if (self.settings.seo[req.path].description) html.description = self.settings.seo[req.path].description
+          if (self.settings.seo[req.path].keywords) html.keywords = self.settings.seo[req.path].keywords
+        }
+
+        ejs.renderFile(path.join(__dirname, './server/layout/index.html'), {
+          html: html,
+          assets: self.app.locals.frontendFilesFinal,
+          environment: self.environment
+        }, {
+          cache: true
+        }, function (err, str) {
+          if (err)console.log(err)
+          res.send(str)
+        })
+      })
+      callback(null, true)
+    },
+    directories: function (callback) {
+      if (!fs.existsSync(self.dir + '/client/scripts/')) {
+        fs.mkdirSync(self.dir + '/client/scripts/')
+      }
+      if (!fs.existsSync(self.dir + '/client/styles/compiled/')) {
+        fs.mkdirSync(self.dir + '/client/styles/compiled/')
+      }
+      if (!fs.existsSync(self.dir + '/client/scripts/compiled/')) {
+        fs.mkdirSync(self.dir + '/client/scripts/compiled/')
+      }
+      if (!fs.existsSync(self.dir + '/client/uploads/')) {
+        fs.mkdirSync(self.dir + '/client/uploads/')
+      }
+      callback(null, true)
+    },
+    envStyle: ['directories', function (results, callback) {
       self.settings.assets.compiled = []
       self.settings.assets.aggregate = {
         css: [],
@@ -71,7 +155,7 @@
       }
       fs.writeFileSync(path.join(self.dir, '/client/styles/global-configs.styles.scss'), '$ENV: "' + self.environment + '" !default;\n' + '$CDN: "' + self.settings.cdn + '" !default;\n')
       callback(null, true)
-    },
+    }],
     moduleScripts: ['envStyle', function (results, callback) {
       _.forEach(self.settings.assets.js, function (n) {
         self.settings.assets.aggregate.js.push(path.join(self.dir, '/client' + n))
@@ -79,17 +163,11 @@
       callback(null, true)
     }],
     globalStyle: ['envStyle', function (results, callback) {
-      console.log(path.join(self.dir + '/client/styles/global.style.scss'), ' DIR')
-      console.log(fs.readdirSync(path.join(self.dir + '/client/styles/')), 't\n  tt')
-
-      console.log(fs.readFileSync(path.join(self.dir + '/client/styles/global.style.scss'), 'utf8'), 'test\ntest')
       var globalContents = fs.readFileSync(self.dir + '/client/styles/global.style.scss', 'utf8')
-      console.log('readFile')
       var result = sass.renderSync({
         includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
         data: globalContents
       })
-      console.log('writeFile')
       fs.writeFileSync(self.dir + '/client/styles/compiled/global.style.css', result.css)
       self.settings.assets.compiled.push('/styles/compiled/global.style.css')
       self.settings.assets.aggregate.css.push(path.join(self.dir, '/client/styles/compiled/global.style.css'))
@@ -178,79 +256,7 @@
         }
       }
       callback(null, true)
-    }],
-
-    routes: function (callback) {
-      mongoose.model('blog', require('./server/modules/blog/blog.model.js'))
-      mongoose.model('users', require('./server/modules/users/users.model.js'))
-      require('./server/modules/users/users.routes.js')(self.app, self.middleware, self.mail, self.settings)
-      require('./server/modules/blog/blog.routes.js')(self.app, self.middleware, self.mail, self.settings)
-
-      callback(null, true)
-    },
-    staticRoutes: function (callback) {
-      self.app.use(express.static(path.join(__dirname, './client/'), {
-        maxAge: 31557600000
-      }))
-      self.app.get('/api/*', function (req, res) {
-        res.status(400).send({
-          error: 'nothing found in api'
-        })
-      })
-      self.app.get('/bower_components/*', function (req, res) {
-        res.status(400).send({
-          error: 'nothing found in bower_components'
-        })
-      })
-      self.app.get('/images/*', function (req, res) {
-        res.status(400).send({
-          error: 'nothing found in images'
-        })
-      })
-      self.app.get('/scripts/*', function (req, res) {
-        res.status(400).send({
-          error: 'nothing found in scripts'
-        })
-      })
-      self.app.get('/styles/*', function (req, res) {
-        res.status(400).send({
-          error: 'nothing found in styles'
-        })
-      })
-      self.app.get('/uploads/*', function (req, res) {
-        res.status(400).send({
-          error: 'nothing found in uploads'
-        })
-      })
-      // Primary app routes
-      self.app.get('/*', function (req, res) {
-        if (_.isUndefined(req.user)) {
-          req.user = {}
-          req.user.authenticated = false
-        } else {
-          req.user.authenticated = true
-        }
-        var html = self.settings.html
-        if (self.settings.seo[req.path]) {
-          if (self.settings.seo[req.path].title) html.title = self.settings.seo[req.path].title
-          if (self.settings.seo[req.path].description) html.description = self.settings.seo[req.path].description
-          if (self.settings.seo[req.path].keywords) html.keywords = self.settings.seo[req.path].keywords
-        }
-
-        ejs.renderFile(path.join(__dirname, './server/layout/index.html'), {
-          html: html,
-          assets: self.app.locals.frontendFilesFinal,
-          environment: self.environment
-        }, {
-          cache: true
-        }, function (err, str) {
-          if (err)console.log(err)
-          res.send(str)
-        })
-      })
-      callback(null, true)
-    }
-
+    }]
   }, function (err, results) {
     if (err)console.log(err)
     auto({
