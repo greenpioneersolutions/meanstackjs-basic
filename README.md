@@ -1,8 +1,8 @@
 
-[![dependencies](https://david-dm.org/greenpioneersolutions/meanstackjs.svg)](https://david-dm.org/greenpioneersolutions/meanstackjs)
-[![npm-issues](https://img.shields.io/github/issues/greenpioneersolutions/meanstackjs.svg)](https://github.com/greenpioneersolutions/meanstackjs/issues)
+[![dependencies](https://david-dm.org/greenpioneersolutions/meanstackjs-basic.svg)](https://david-dm.org/greenpioneersolutions/meanstackjs)
+[![npm-issues](https://img.shields.io/github/issues/greenpioneersolutions/meanstackjs-basic.svg)](https://github.com/greenpioneersolutions/meanstackjs/issues)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-[![Build Status](https://travis-ci.org/greenpioneersolutions/meanstackjs.svg?branch=master)](https://travis-ci.org/greenpioneersolutions/meanstackjs)
+[![Build Status](https://travis-ci.org/greenpioneersolutions/meanstackjs-basic.svg?branch=master)](https://travis-ci.org/greenpioneersolutions/meanstackjs)
 [![Join the chat at https://gitter.im/greenpioneersolutions/meanstackjs](https://badges.gitter.im/greenpioneersolutions/meanstackjs.svg)](https://gitter.im/greenpioneersolutions/meanstackjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Codewake](https://www.codewake.com/badges/codewake2.svg)](https://www.codewake.com/p/meanstackjs)
 [![Get help on Codementor](https://cdn.codementor.io/badges/get_help_github.svg)](https://www.codementor.io/jasonhumphrey?utm_source=github&utm_medium=button&utm_term=jasonhumphrey&utm_campaign=github)
@@ -21,7 +21,7 @@
 
 What is Mean Stack JS - BASIC
 -----------------
-This repo is a stripped down version of the main meanstackjs. This repo will be for the purpose of teaching or if you want just the base functionally. Please refer to all live documentation back at [MeanStackJS](https://github.com/greenpioneersolutions/meanstackjs/wiki)
+This repo is a stripped down version of the main meanstackjs. This repo will be great for you if you want to totally control every last part of your stack. This repo will also be for the purpose of teaching or if you want just the base functionally. Please refer to all live documentation back at [MeanStackJS](https://github.com/greenpioneersolutions/meanstackjs/wiki)
 
 Stack
 - [MongoDB](https://www.mongodb.org/) - MongoDB is the leading NoSQL database, empowering businesses to be more agile and scalable.

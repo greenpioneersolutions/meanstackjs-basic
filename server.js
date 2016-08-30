@@ -62,119 +62,6 @@
       require('./server/error.js')(self)
       callback(null, true)
     },
-
-    envStyle: function (callback) {
-      self.settings.assets.compiled = []
-      self.settings.assets.aggregate = {
-        css: [],
-        js: []
-      }
-      fs.writeFileSync(path.join(self.dir, '/client/styles/global-configs.styles.scss'), '$ENV: "' + self.environment + '" !default;\n' + '$CDN: "' + self.settings.cdn + '" !default;\n')
-      callback(null, true)
-    },
-    moduleScripts: ['envStyle', function (results, callback) {
-      _.forEach(self.settings.assets.js, function (n) {
-        self.settings.assets.aggregate.js.push(path.join(self.dir, '/client' + n))
-      })
-      callback(null, true)
-    }],
-    globalStyle: ['envStyle', function (results, callback) {
-      var globalContents = fs.readFileSync(self.dir + '/client/styles/global.style.scss', 'utf8')
-      var result = sass.renderSync({
-        includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
-        data: globalContents
-      })
-      fs.writeFileSync(self.dir + '/client/styles/compiled/global.style.css', result.css)
-      self.settings.assets.compiled.push('/styles/compiled/global.style.css')
-      self.settings.assets.aggregate.css.push(path.join(self.dir, '/client/styles/compiled/global.style.css'))
-      callback(null, true)
-    }],
-
-    moduleStyles: ['globalStyle', function (results, callback) {
-      _.forEach(self.settings.assets.css, function (n) {
-        var info = path.parse(n)
-        switch (info.ext) {
-          case '.less':
-            var lessContents = fs.readFileSync(path.join(self.dir, '/client' + n), 'utf8')
-            less.render(lessContents, function (err, result) {
-              if (err) {
-                console.log(err)
-              }
-              fs.writeFileSync(path.join(self.dir, '/client/styles/compiled/' + info.base + '.css'), result.css)
-              self.settings.assets.compiled.push('/styles/compiled/' + info.base + '.css')
-              self.settings.assets.aggregate.css.push(path.join(self.dir, '/client' + '/styles/compiled/' + info.base + '.css'))
-            })
-            break
-          case '.scss':
-          case '.sass':
-            var scssContents = fs.readFileSync(path.join(self.dir, '/client' + n), 'utf8')
-            // PLACED includePaths: so that @import 'global-variables.styles.scss'; work properly
-            var result = sass.renderSync({
-              includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
-              data: scssContents
-            })
-            fs.writeFileSync(path.join(self.dir, '/client/styles/compiled/' + info.base + '.css'), result.css)
-            self.settings.assets.compiled.push('/styles/compiled/' + info.base + '.css')
-            self.settings.assets.aggregate.css.push(path.join(self.dir, '/client' + '/styles/compiled/' + info.base + '.css'))
-            break
-          default:
-            self.settings.assets.compiled.push(n)
-            self.settings.assets.aggregate.css.push(path.join(self.dir, '/client' + n))
-            break
-        }
-      })
-      // require('./server/error.js')(self)
-      callback(null, true)
-    }],
-    frontendFiles: ['moduleStyles', function (results, callback) {
-      if (self.environment === 'test') {
-        concat(self.settings.assets.aggregate.css, path.join(self.dir, '/client/styles/compiled/concat.css'), function (error) {
-          if (error)console.log(error, 'concat')
-        })
-        concat(self.settings.assets.aggregate.js, path.join(self.dir, '/client/scripts/compiled/concat.js'), function (error) {
-          if (error)console.log(error, 'concat')
-        })
-        self.app.locals.frontendFilesFinal = {
-          js: ['scripts/compiled/concat.js'],
-          css: ['styles/compiled/concat.css']
-        }
-      } else if (self.environment === 'production') {
-        var uglifiedcss = uglifycss.processFiles(
-          self.settings.assets.aggregate.css, {
-            maxLineLen: 500
-          }
-        )
-        fs.writeFile(path.join(self.dir, '/client/styles/compiled/concat.min.css'), uglifiedcss, function (err) {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log('Script generated and saved:', 'concat.min.css')
-          }
-        })
-
-        var uglifiedjs = uglify.minify(self.settings.assets.aggregate.js, {
-          mangle: false
-        })
-        fs.writeFile(path.join(self.dir, '/client/scripts/compiled/concat.min.js'), uglifiedjs.code, function (err) {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log('Script generated and saved:', 'concat.min.js')
-          }
-        })
-        self.app.locals.frontendFilesFinal = {
-          js: ['scripts/compiled/concat.min.js'],
-          css: ['styles/compiled/concat.min.css']
-        }
-      } else {
-        self.app.locals.frontendFilesFinal = {
-          css: self.settings.assets.compiled,
-          js: self.settings.assets.js
-        }
-      }
-      callback(null, true)
-    }],
-
     routes: function (callback) {
       mongoose.model('blog', require('./server/modules/blog/blog.model.js'))
       mongoose.model('users', require('./server/modules/users/users.model.js'))
@@ -244,8 +131,132 @@
         })
       })
       callback(null, true)
-    }
+    },
+    directories: function (callback) {
+      if (!fs.existsSync(self.dir + '/client/scripts/')) {
+        fs.mkdirSync(self.dir + '/client/scripts/')
+      }
+      if (!fs.existsSync(self.dir + '/client/styles/compiled/')) {
+        fs.mkdirSync(self.dir + '/client/styles/compiled/')
+      }
+      if (!fs.existsSync(self.dir + '/client/scripts/compiled/')) {
+        fs.mkdirSync(self.dir + '/client/scripts/compiled/')
+      }
+      if (!fs.existsSync(self.dir + '/client/uploads/')) {
+        fs.mkdirSync(self.dir + '/client/uploads/')
+      }
+      callback(null, true)
+    },
+    envStyle: ['directories', function (results, callback) {
+      self.settings.assets.compiled = []
+      self.settings.assets.aggregate = {
+        css: [],
+        js: []
+      }
+      fs.writeFileSync(path.join(self.dir, '/client/styles/global-configs.styles.scss'), '$ENV: "' + self.environment + '" !default;\n' + '$CDN: "' + self.settings.cdn + '" !default;\n')
+      callback(null, true)
+    }],
+    moduleScripts: ['envStyle', function (results, callback) {
+      _.forEach(self.settings.assets.js, function (n) {
+        self.settings.assets.aggregate.js.push(path.join(self.dir, '/client' + n))
+      })
+      callback(null, true)
+    }],
+    globalStyle: ['envStyle', function (results, callback) {
+      var globalContents = fs.readFileSync(self.dir + '/client/styles/global.style.scss', 'utf8')
+      var result = sass.renderSync({
+        includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
+        data: globalContents
+      })
+      fs.writeFileSync(self.dir + '/client/styles/compiled/global.style.css', result.css)
+      self.settings.assets.compiled.push('/styles/compiled/global.style.css')
+      self.settings.assets.aggregate.css.push(path.join(self.dir, '/client/styles/compiled/global.style.css'))
+      callback(null, true)
+    }],
 
+    moduleStyles: ['globalStyle', function (results, callback) {
+      _.forEach(self.settings.assets.css, function (n) {
+        var info = path.parse(n)
+        switch (info.ext) {
+          case '.less':
+            var lessContents = fs.readFileSync(path.join(self.dir, '/client' + n), 'utf8')
+            less.render(lessContents, function (err, result) {
+              if (err) {
+                console.log(err)
+              }
+              fs.writeFileSync(path.join(self.dir, '/client/styles/compiled/' + info.base + '.css'), result.css)
+              self.settings.assets.compiled.push('/styles/compiled/' + info.base + '.css')
+              self.settings.assets.aggregate.css.push(path.join(self.dir, '/client' + '/styles/compiled/' + info.base + '.css'))
+            })
+            break
+          case '.scss':
+          case '.sass':
+            var scssContents = fs.readFileSync(path.join(self.dir, '/client' + n), 'utf8')
+            // PLACED includePaths: so that @import 'global-variables.styles.scss'; work properly
+            var result = sass.renderSync({
+              includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
+              data: scssContents
+            })
+            fs.writeFileSync(path.join(self.dir, '/client/styles/compiled/' + info.base + '.css'), result.css)
+            self.settings.assets.compiled.push('/styles/compiled/' + info.base + '.css')
+            self.settings.assets.aggregate.css.push(path.join(self.dir, '/client' + '/styles/compiled/' + info.base + '.css'))
+            break
+          default:
+            self.settings.assets.compiled.push(n)
+            self.settings.assets.aggregate.css.push(path.join(self.dir, '/client' + n))
+            break
+        }
+      })
+      callback(null, true)
+    }],
+    frontendFiles: ['moduleStyles', function (results, callback) {
+      if (self.environment === 'test') {
+        concat(self.settings.assets.aggregate.css, path.join(self.dir, '/client/styles/compiled/concat.css'), function (error) {
+          if (error)console.log(error, 'concat')
+        })
+        concat(self.settings.assets.aggregate.js, path.join(self.dir, '/client/scripts/compiled/concat.js'), function (error) {
+          if (error)console.log(error, 'concat')
+        })
+        self.app.locals.frontendFilesFinal = {
+          js: ['scripts/compiled/concat.js'],
+          css: ['styles/compiled/concat.css']
+        }
+      } else if (self.environment === 'production') {
+        var uglifiedcss = uglifycss.processFiles(
+          self.settings.assets.aggregate.css, {
+            maxLineLen: 500
+          }
+        )
+        fs.writeFile(path.join(self.dir, '/client/styles/compiled/concat.min.css'), uglifiedcss, function (err) {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log('Script generated and saved:', 'concat.min.css')
+          }
+        })
+
+        var uglifiedjs = uglify.minify(self.settings.assets.aggregate.js, {
+          mangle: false
+        })
+        fs.writeFile(path.join(self.dir, '/client/scripts/compiled/concat.min.js'), uglifiedjs.code, function (err) {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log('Script generated and saved:', 'concat.min.js')
+          }
+        })
+        self.app.locals.frontendFilesFinal = {
+          js: ['scripts/compiled/concat.min.js'],
+          css: ['styles/compiled/concat.min.css']
+        }
+      } else {
+        self.app.locals.frontendFilesFinal = {
+          css: self.settings.assets.compiled,
+          js: self.settings.assets.js
+        }
+      }
+      callback(null, true)
+    }]
   }, function (err, results) {
     if (err)console.log(err)
     auto({
