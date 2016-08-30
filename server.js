@@ -79,11 +79,15 @@
       callback(null, true)
     }],
     globalStyle: ['envStyle', function (results, callback) {
+      console.log(fs.readdirSync(self.dir + '/client/styles/global.style.scss'))
+      console.log(self.dir + '/client/styles/global.style.scss', ' DIR')
       var globalContents = fs.readFileSync(self.dir + '/client/styles/global.style.scss', 'utf8')
+      console.log('readFile')
       var result = sass.renderSync({
         includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
         data: globalContents
       })
+      console.log('writeFile')
       fs.writeFileSync(self.dir + '/client/styles/compiled/global.style.css', result.css)
       self.settings.assets.compiled.push('/styles/compiled/global.style.css')
       self.settings.assets.aggregate.css.push(path.join(self.dir, '/client/styles/compiled/global.style.css'))
@@ -123,7 +127,6 @@
             break
         }
       })
-      // require('./server/error.js')(self)
       callback(null, true)
     }],
     frontendFiles: ['moduleStyles', function (results, callback) {
