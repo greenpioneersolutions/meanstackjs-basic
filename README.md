@@ -19,8 +19,34 @@
 
 #[Check Documentation Here](https://github.com/greenpioneersolutions/meanstackjs/wiki)
 
-What is Mean Stack JS - Lite
+Why Mean Stack JS
 -----------------
+
+Do you need a full stack solution that is easy to build and all javascript?  Then you're in the right place with Mean Stack JS. There is no steep learning curve and it only takes an average of 10 minutes to get your base code up and running.  We've made the development process as simple and scalable as possible. This is perfect for anyone involved in software development, including User Experience Designers, Quality Assurance Engineers, Software Engineers, Frontend Developers, Backend Developers and Full Stack Engineers.
+
+
+How to Learn Mean Stack JS
+-----------------
+Start learning with documentation:
+* [Check Documentation Here](https://github.com/greenpioneersolutions/meanstackjs/wiki)
+
+Check out this YouTube channel that has content to help you:
+* [Subscribe to our Youtube Channel - MeanStackJs](https://www.youtube.com/channel/UC5lpSv5tNowgWxC9crTl97g)
+* [Watch MeanStackJs - How to series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdqgwW6U39s_oMAehgtXa15O)
+* [Watch MeanStackJs - Error series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdr19ha6bx7jt6Bu2RCM5c5_)
+
+For the full version, start here instead:
+* [MeanStackJS](https://github.com/greenpioneersolutions/meanstackjs)
+
+
+Want more content?
+* [LiveCoding.TV](https://www.livecoding.tv/greenpioneer/)
+* [Style Guide](https://github.com/greenpioneersolutions/gps-style-guide)
+
+
+What is Mean Stack JS Lite ?
+-----------------
+
 This repo is a stripped down version of the main meanstackjs. This repo will be great for you if you want to totally control every last part of your stack. This repo will also be for the purpose of teaching or if you want just the base functionally. Please refer to all live documentation back at [MeanStackJS](https://github.com/greenpioneersolutions/meanstackjs/wiki)
 
 Stack
