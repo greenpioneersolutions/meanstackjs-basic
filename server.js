@@ -1,30 +1,31 @@
 ;(function meanBasic (opts) {
-  var fs = require('fs')
-  var path = require('path')
-  var mongoose = require('mongoose')
   var _ = require('lodash')
-  var express = require('express')
-  var logger = require('morgan')
   var auto = require('run-auto')
+  var auth = require('./server/passport.js')
+  var bodyParser = require('body-parser')
+  var compress = require('compression')
   var concat = require('serial-concat-files')
+  var cookieParser = require('cookie-parser')
+  var cors = require('cors')
+  var ejs = require('ejs')
+  var express = require('express')
+  var expressValidator = require('express-validator')
+  var fs = require('fs')
+  var helmet = require('helmet')
+  var https = require('https')
+  var logger = require('morgan')
   var less = require('less')
+  var mongoose = require('mongoose')
+  var methodOverride = require('method-override')
   var uglify = require('uglify-js')
   var uglifycss = require('uglifycss')
-  var sass = require('node-sass')
-  var compress = require('compression')
-  var bodyParser = require('body-parser')
-  var expressValidator = require('express-validator')
   var passport = require('passport')
-  var auth = require('./server/passport.js')
-  var cookieParser = require('cookie-parser')
-  var methodOverride = require('method-override')
+  var path = require('path')
+  var sass = require('node-sass')
   var session = require('express-session')
   var MongoStore = require('connect-mongo')(session)
-  var https = require('https')
-  var ejs = require('ejs')
 
   var self = this
-
   self.app = express()
   self.environment = require('./configs/environment.js').get()
   self.settings = require('./configs/settings.js').get()
@@ -32,8 +33,9 @@
   self.middleware = require('./server/middleware.js')
   self.mail = require('./server/mail.js')
   self.dir = __dirname
+
   auto({
-    configs: function (callback) {
+    setExpressConfigs: function (callback) {
       self.app.set('port', self.port)
       self.app.use(compress())
       self.app.use(bodyParser.json(self.settings.bodyparser.json))
@@ -58,11 +60,19 @@
       if (self.settings.logger)self.app.use(logger(self.settings.logger))
       callback(null, true)
     },
-    errorHandling: function (callback) {
+    setExpressErrorHandler: function (callback) {
       require('./server/error.js')(self)
       callback(null, true)
     },
-    routes: function (callback) {
+    setExpressSecurity: function (callback) {
+      self.app.use(helmet(self.settings.bodyparser.helmet))
+      callback(null, true)
+    },
+    setExpressCORS: function (callback) {
+      self.app.use(cors())
+      callback(null, true)
+    },
+    setServerRoutes: function (callback) {
       mongoose.model('blog', require('./server/modules/blog/blog.model.js'))
       mongoose.model('users', require('./server/modules/users/users.model.js'))
       require('./server/modules/users/users.routes.js')(self.app, self.middleware, self.mail, self.settings)
@@ -70,7 +80,7 @@
 
       callback(null, true)
     },
-    staticRoutes: function (callback) {
+    setStaticRoutes: function (callback) {
       self.app.use(express.static(path.join(__dirname, './client/'), {
         maxAge: 31557600000
       }))
@@ -105,7 +115,7 @@
         })
       })
       // Primary app routes
-      self.app.get('/*', function (req, res) {
+      self.app.get('/*', function (req, res, next) {
         if (_.isUndefined(req.user)) {
           req.user = {}
           req.user.authenticated = false
@@ -126,13 +136,13 @@
         }, {
           cache: true
         }, function (err, str) {
-          if (err)console.log(err)
+          if (err) next(err)
           res.send(str)
         })
       })
       callback(null, true)
     },
-    directories: function (callback) {
+    createDirectories: function (callback) {
       if (!fs.existsSync(self.dir + '/client/scripts/')) {
         fs.mkdirSync(self.dir + '/client/scripts/')
       }
@@ -147,7 +157,7 @@
       }
       callback(null, true)
     },
-    envStyle: ['directories', function (results, callback) {
+    createEnvironmentStyle: ['createDirectories', function (results, callback) {
       self.settings.assets.compiled = []
       self.settings.assets.aggregate = {
         css: [],
@@ -156,13 +166,13 @@
       fs.writeFileSync(path.join(self.dir, '/client/styles/global-configs.styles.scss'), '$ENV: "' + self.environment + '" !default;\n' + '$CDN: "' + self.settings.cdn + '" !default;\n')
       callback(null, true)
     }],
-    moduleScripts: ['envStyle', function (results, callback) {
+    setModuleScripts: ['createEnvironmentStyle', function (results, callback) {
       _.forEach(self.settings.assets.js, function (n) {
         self.settings.assets.aggregate.js.push(path.join(self.dir, '/client' + n))
       })
       callback(null, true)
     }],
-    globalStyle: ['envStyle', function (results, callback) {
+    createGlobalStyle: ['createEnvironmentStyle', function (results, callback) {
       var globalContents = fs.readFileSync(self.dir + '/client/styles/global.style.scss', 'utf8')
       var result = sass.renderSync({
         includePaths: [path.join(self.dir, '/client/modules'), path.join(self.dir, '/client/styles'), path.join(self.dir, '/client/bower_components/bootstrap-sass/assets/stylesheets'), path.join(self.dir, '/client/bower_components/Materialize/sass'), path.join(self.dir, '/client/bower_components/foundation/scss'), path.join(self.dir, '/client/bower_components/font-awesome/scss')],
@@ -173,8 +183,7 @@
       self.settings.assets.aggregate.css.push(path.join(self.dir, '/client/styles/compiled/global.style.css'))
       callback(null, true)
     }],
-
-    moduleStyles: ['globalStyle', function (results, callback) {
+    createModuleStyles: ['createGlobalStyle', function (results, callback) {
       _.forEach(self.settings.assets.css, function (n) {
         var info = path.parse(n)
         switch (info.ext) {
@@ -209,7 +218,8 @@
       })
       callback(null, true)
     }],
-    frontendFiles: ['moduleStyles', function (results, callback) {
+
+    createFrontendFiles: ['createModuleStyles', function (results, callback) {
       if (self.environment === 'test') {
         concat(self.settings.assets.aggregate.css, path.join(self.dir, '/client/styles/compiled/concat.css'), function (error) {
           if (error)console.log(error, 'concat')
@@ -254,6 +264,21 @@
           css: self.settings.assets.compiled,
           js: self.settings.assets.js
         }
+      }
+      callback(null, true)
+    }],
+    useCDN: ['createFrontendFiles', function (results, callback) {
+      if (self.settings.cdn) {
+        var FilesFinal = {
+          js: [],
+          css: []
+        }
+        _.forEach(self.app.locals.frontendFilesFinal, function (type, typeKey) {
+          _.forEach(type, function (n) {
+            FilesFinal[typeKey].push(self.settings.cdn + n)
+          })
+        })
+        self.app.locals.frontendFilesFinal = FilesFinal
       }
       callback(null, true)
     }]
