@@ -1,6 +1,6 @@
 {
-  "name": "meanstackjs-basic",
-  "version": "0.1.0",
+  "name": "meanstackjs-lite",
+  "version": "0.5.0",
   "description": "We are building in this framework to make your life as a designer or developer easier. We believe in making this framework usable for User Experience Designers, Quality Assurance Engineers, Software Engineers, Frontend & Backend Developers & Full Stack Engineers...",
   "main": "server.js",
   "standard": {
@@ -17,7 +17,10 @@
       "io",
       "expect",
       "inject",
-      "beforeEach"
+      "beforeEach",
+      "before",
+      "afterEach",
+      "after"
     ],
     "ignore": [
       "commands/template/"
