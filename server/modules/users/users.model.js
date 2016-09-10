@@ -136,7 +136,7 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
     if (res) {
       user.lastLoggedIn = Date.now()
       user.save(function (err) {
-        console.log(err, 'err')
+        if (err)console.log(err, 'err')
       })
     }
     cb(err, res)
