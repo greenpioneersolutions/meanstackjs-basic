@@ -2,17 +2,11 @@
 [![dependencies](https://david-dm.org/greenpioneersolutions/meanstackjs-lite.svg)](https://david-dm.org/greenpioneersolutions/meanstackjs)
 [![npm-issues](https://img.shields.io/github/issues/greenpioneersolutions/meanstackjs-lite.svg)](https://github.com/greenpioneersolutions/meanstackjs/issues)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-[![Build Status](https://travis-ci.org/greenpioneersolutions/meanstackjs-lite.svg?branch=master)](https://travis-ci.org/greenpioneersolutions/meanstackjs)
+[![Build Status](https://travis-ci.org/greenpioneersolutions/meanstackjs-lite.svg?branch=master)](https://travis-ci.org/greenpioneersolutions/meanstackjs-lite)
 [![Join the chat at https://gitter.im/greenpioneersolutions/meanstackjs](https://badges.gitter.im/greenpioneersolutions/meanstackjs.svg)](https://gitter.im/greenpioneersolutions/meanstackjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Codewake](https://www.codewake.com/badges/codewake2.svg)](https://www.codewake.com/p/meanstackjs)
 [![Get help on Codementor](https://cdn.codementor.io/badges/get_help_github.svg)](https://www.codementor.io/jasonhumphrey?utm_source=github&utm_medium=button&utm_term=jasonhumphrey&utm_campaign=github)
 [![Donatee](https://img.shields.io/badge/paypal-donate-blue.svg)](https://paypal.me/greenpioneer)
-
-[Subscribe to our Youtube Channel - MeanStackJs](https://www.youtube.com/channel/UC5lpSv5tNowgWxC9crTl97g)
-
-[Watch MeanStackJs - How to series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdqgwW6U39s_oMAehgtXa15O)
-
-[Watch MeanStackJs - Error series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdr19ha6bx7jt6Bu2RCM5c5_)
 
 [![meanstackjs Logo](http://meanstackjs.com/images/logo/header3x.png)](http://meanstackjs.com/)
 
@@ -42,6 +36,7 @@ For the full version, start here instead:
 Want more content?
 * [LiveCoding.TV](https://www.livecoding.tv/greenpioneer/)
 * [Style Guide](https://github.com/greenpioneersolutions/gps-style-guide)
+* [Roadmap](https://github.com/greenpioneersolutions/meanstackjs/wiki/Roadmap)
 
 
 What is Mean Stack JS Lite ?
@@ -109,6 +104,8 @@ restart the server each time you make a small change in code. To install, run
 `sudo npm install -g nodemon`.
 
 [Check Documentation Here](https://github.com/greenpioneersolutions/meanstackjs/wiki)
+
+[Check Roadmap Here](https://github.com/greenpioneersolutions/meanstackjs/wiki/Roadmap)
 
 [express]: <http://expressjs.com>
 [AngularJS]: <http://angularjs.org>
