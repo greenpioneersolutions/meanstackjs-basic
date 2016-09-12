@@ -1,26 +1,47 @@
 
-[![dependencies](https://david-dm.org/greenpioneersolutions/meanstackjs-basic.svg)](https://david-dm.org/greenpioneersolutions/meanstackjs)
-[![npm-issues](https://img.shields.io/github/issues/greenpioneersolutions/meanstackjs-basic.svg)](https://github.com/greenpioneersolutions/meanstackjs/issues)
+[![dependencies](https://david-dm.org/greenpioneersolutions/meanstackjs-lite.svg)](https://david-dm.org/greenpioneersolutions/meanstackjs)
+[![npm-issues](https://img.shields.io/github/issues/greenpioneersolutions/meanstackjs-lite.svg)](https://github.com/greenpioneersolutions/meanstackjs/issues)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-[![Build Status](https://travis-ci.org/greenpioneersolutions/meanstackjs-basic.svg?branch=master)](https://travis-ci.org/greenpioneersolutions/meanstackjs)
+[![Build Status](https://travis-ci.org/greenpioneersolutions/meanstackjs-lite.svg?branch=master)](https://travis-ci.org/greenpioneersolutions/meanstackjs-lite)
 [![Join the chat at https://gitter.im/greenpioneersolutions/meanstackjs](https://badges.gitter.im/greenpioneersolutions/meanstackjs.svg)](https://gitter.im/greenpioneersolutions/meanstackjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Codewake](https://www.codewake.com/badges/codewake2.svg)](https://www.codewake.com/p/meanstackjs)
 [![Get help on Codementor](https://cdn.codementor.io/badges/get_help_github.svg)](https://www.codementor.io/jasonhumphrey?utm_source=github&utm_medium=button&utm_term=jasonhumphrey&utm_campaign=github)
 [![Donatee](https://img.shields.io/badge/paypal-donate-blue.svg)](https://paypal.me/greenpioneer)
-
-[Subscribe to our Youtube Channel - MeanStackJs](https://www.youtube.com/channel/UC5lpSv5tNowgWxC9crTl97g)
-
-[Watch MeanStackJs - How to series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdqgwW6U39s_oMAehgtXa15O)
-
-[Watch MeanStackJs - Error series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdr19ha6bx7jt6Bu2RCM5c5_)
 
 [![meanstackjs Logo](http://meanstackjs.com/images/logo/header3x.png)](http://meanstackjs.com/)
 
 
 #[Check Documentation Here](https://github.com/greenpioneersolutions/meanstackjs/wiki)
 
-What is Mean Stack JS - BASIC
+Why Mean Stack JS
 -----------------
+
+Do you need a full stack solution that is easy to build and all javascript?  Then you're in the right place with Mean Stack JS. There is no steep learning curve and it only takes an average of 10 minutes to get your base code up and running.  We've made the development process as simple and scalable as possible. This is perfect for anyone involved in software development, including User Experience Designers, Quality Assurance Engineers, Software Engineers, Frontend Developers, Backend Developers and Full Stack Engineers.
+
+
+How to Learn Mean Stack JS
+-----------------
+Start learning with documentation:
+* [Check Documentation Here](https://github.com/greenpioneersolutions/meanstackjs/wiki)
+
+Check out this YouTube channel that has content to help you:
+* [Subscribe to our Youtube Channel - MeanStackJs](https://www.youtube.com/channel/UC5lpSv5tNowgWxC9crTl97g)
+* [Watch MeanStackJs - How to series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdqgwW6U39s_oMAehgtXa15O)
+* [Watch MeanStackJs - Error series](https://www.youtube.com/playlist?list=PLhJ-Q2setTdr19ha6bx7jt6Bu2RCM5c5_)
+
+For the full version, start here instead:
+* [MeanStackJS](https://github.com/greenpioneersolutions/meanstackjs)
+
+
+Want more content?
+* [LiveCoding.TV](https://www.livecoding.tv/greenpioneer/)
+* [Style Guide](https://github.com/greenpioneersolutions/gps-style-guide)
+* [Roadmap](https://github.com/greenpioneersolutions/meanstackjs/wiki/Roadmap)
+
+
+What is Mean Stack JS Lite ?
+-----------------
+
 This repo is a stripped down version of the main meanstackjs. This repo will be great for you if you want to totally control every last part of your stack. This repo will also be for the purpose of teaching or if you want just the base functionally. Please refer to all live documentation back at [MeanStackJS](https://github.com/greenpioneersolutions/meanstackjs/wiki)
 
 Stack
@@ -59,10 +80,10 @@ The easiest way to get started is to clone the repository:
 
 ```bash
 # Get the latest snapshot
-git clone https://github.com/greenpioneersolutions/meanstackjs-basic.git
+git clone https://github.com/greenpioneersolutions/meanstackjs-lite.git
 
 # Change directory
-cd meanstackjs-basic
+cd meanstackjs-lite
 
 # Install NPM dependencies
 npm install
@@ -83,6 +104,8 @@ restart the server each time you make a small change in code. To install, run
 `sudo npm install -g nodemon`.
 
 [Check Documentation Here](https://github.com/greenpioneersolutions/meanstackjs/wiki)
+
+[Check Roadmap Here](https://github.com/greenpioneersolutions/meanstackjs/wiki/Roadmap)
 
 [express]: <http://expressjs.com>
 [AngularJS]: <http://angularjs.org>

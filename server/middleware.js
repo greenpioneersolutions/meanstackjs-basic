@@ -15,10 +15,8 @@ function findUser (id, cb) {
 
 exports.isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
-    console.log('middleware: isAuthenticated')
     return next()
   } else {
-    console.log('middleware: is Not Authenticated ')
     return res.status(401).send({
       success: false, msg: 'User needs to re-authenticated'
     })
@@ -35,17 +33,14 @@ exports.isAuthorized = function (name, extra) {
     }
     if (req.isAuthenticated()) {
       if (user._id.toString() !== req.user._id.toString()) {
-        console.log('middleware: is Not Authorized')
         return next({
           status: 401,
           msg: 'User is not Authorized'
         })
       } else {
-        console.log('middleware: isAuthenticated')
         return next()
       }
     } else {
-      console.log('middleware: is Not Authorized ')
       return res.status(401).send({
         success: false,
         msg: 'User needs to re-authenticated'
@@ -53,9 +48,19 @@ exports.isAuthorized = function (name, extra) {
     }
   }
 }
+exports.hasRole = function (role) {
+  return function (req, res, next) {
+    if (!req.isAuthenticated() || req.user.roles.indexOf(role) === -1) {
+      return res.status(403).send({
+        success: false,
+        msg: 'Forbidden'
+      })
+    }
+    next()
+  }
+}
 exports.isAdmin = function (req, res, next) {
   if (req.isAuthenticated()) {
-    console.log('middleware: isAdmin')
     findUser(req.user._id, function (user) {
       if (!user) return res.status(401).send('User is not authorized')
       if (user.roles.indexOf('admin') === -1) return res.status(401).send('User is not authorized')
@@ -63,7 +68,6 @@ exports.isAdmin = function (req, res, next) {
       return next()
     })
   } else {
-    console.log('middleware: is Not Admin ')
     return res.status(401).send({
       success: false, msg: 'User is not authorized'
     })
@@ -71,7 +75,6 @@ exports.isAdmin = function (req, res, next) {
 }
 exports.isMongoId = function (req, res, next) {
   if ((_.size(req.params) === 1) && (!mongoose.Types.ObjectId.isValid(_.values(req.params)[0]))) {
-    console.log('middleware Not Mongo ID: ' + _.values(req.params)[0])
     return res.status(500).send({success: false, msg: 'Parameter passed is not a valid Mongo ObjectId'})
   }
   next()
@@ -84,7 +87,6 @@ exports.verify = function (req, res, next) {
     if (token) {
       jwt.verify(token, settings.jwt.secret, function (err, decoded) {
         if (err) {
-          console.log('middleware verify error: ', err)
           switch (err.name) {
             case 'TokenExpiredError':
               res.status(401).send({
@@ -107,18 +109,17 @@ exports.verify = function (req, res, next) {
             if (!user) {
               return res.status(401).send({success: false, msg: 'Authentication failed. User not found.'})
             } else {
-              console.log('middleware verify user: ', user.email)
               next()
             }
           })
         }
       })
     } else {
-      console.log('middleware no token provided')
       return res.status(401).send({success: false, msg: 'No token provided.'})
     }
   } catch (err) {
-    console.log(err, 'err verify')
+    console.log(err, 'err catch')
+    return res.status(500).send({success: false, msg: 'Internal Server Error'})
   }
 }
 function getToken (headers) {
