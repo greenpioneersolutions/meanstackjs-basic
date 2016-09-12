@@ -48,6 +48,17 @@ exports.isAuthorized = function (name, extra) {
     }
   }
 }
+exports.hasRole = function (role) {
+  return function (req, res, next) {
+    if (!req.isAuthenticated() || req.user.roles.indexOf(role) === -1) {
+      return res.status(403).send({
+        success: false,
+        msg: 'Forbidden'
+      })
+    }
+    next()
+  }
+}
 exports.isAdmin = function (req, res, next) {
   if (req.isAuthenticated()) {
     findUser(req.user._id, function (user) {
