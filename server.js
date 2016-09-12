@@ -37,20 +37,33 @@ function MeanLite (opts, done) {
   self.mail = require('./server/mail.js')
   self.dir = __dirname
   // Start of the build process
+  // setupExpressConfigs > Used to set up expressjs initially, middleware & passport.
   self.setupExpressConfigs()
+  // setupExpressErrorHandler > Used to set up our customer error handler in the server folder.
   self.setupExpressErrorHandler()
+  // setupExpressSecurity > Used to set up helmet, hpp, cors & content length.
   self.setupExpressSecurity()
+  // setupExpressHeaders > Used to set up the headers that go out on every route.
   self.setupExpressHeaders()
+  // setupExpressLogger > Used to set up our morgan logger & debug statements on all routes.
   self.setupExpressLogger()
+  // setupServerModels > Used to set up all mongoose models.
   self.setupServerModels()
+  // setupServerRoutes > Used to set up all module routes.
   self.setupServerRoutes()
+  // setupStaticRoutes > Used to set up all system static routes including the main '/*' route with ejs templating.
   self.setupStaticRoutes()
+  // setupFrontendConfigs > Used to set up the proper directories and variable to compile later.
   self.setupFrontendConfigs()
+  // compileFrontendStyles > Used to compile all frontend style (scss , less & css) & will render all styles.
   self.compileFrontendStyles()
+  // compileFrontendScripts > Used to compile all of the frontend files declared.
   self.compileFrontendScripts()
+  // renderFrontendFiles > Used to render all frontend files that we previously compiled together.
   self.renderFrontendFiles()
+  // updateFrontendCdn > Used to update the files based of if your using a cdn. We Support MAXCDN.
   self.updateFrontendCdn()
-
+  // auto  - connectMongoDb :  server > Used to finsh the final set up of the server. at the same time we start connecting to mongo and turning on the server.
   auto({
     connectMongoDb: function (callback) {
       mongoose.Promise = Promise
@@ -98,7 +111,7 @@ MeanLite.prototype.setupExpressConfigs = function () {
   self.app.use(compress())
   self.app.use(bodyParser.json(self.settings.bodyparser.json))
   self.app.use(bodyParser.urlencoded(self.settings.bodyparser.urlencoded))
-  self.app.use(expressValidator())
+  self.app.use(expressValidator(self.settings.expresValidator))
   self.app.use(methodOverride())
   self.app.use(cookieParser())
   self.app.use(session({
