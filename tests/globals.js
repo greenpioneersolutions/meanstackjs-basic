@@ -1,5 +1,4 @@
 process.env.NODE_ENV = 'nightwatch'
-require('../server.js')
 var HtmlReporter = require('nightwatch-html-reporter')
 var path = require('path')
 var reporter = new HtmlReporter({
@@ -38,8 +37,16 @@ module.exports = {
   asyncHookTimeout: 10000,
 
   before: function (done) {
-    require('./seed.js')(function () {
-      done()
+    var MeanLite = require('../server.js')
+    var server = new MeanLite({}, function (err) {
+      if (err) {
+        console.error('Error during ' + server.settings.title + ' startup. Abort.')
+        console.error(err)
+        process.exit(1)
+      }
+      require('./seed.js')(function () {
+        done()
+      })
     })
   },
 
