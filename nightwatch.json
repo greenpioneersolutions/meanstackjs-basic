@@ -1,6 +1,6 @@
 {
   "src_folders": ["tests/e2e"],
-  "output_folder" : "reports/nightwatch",
+  "output_folder" : "tools/nightwatch/reports",
   "custom_commands_path" : "",
   "custom_assertions_path" : "",
   "page_objects_path" : "",
@@ -20,14 +20,14 @@
 
   "test_settings" : {
     "default" : {
-      "launch_url" : "http://localhost:3002/",
+      "launch_url" : "http://localhost:3000/",
       "selenium_port"  : 4444,
       "selenium_host"  : "localhost",
       "pathname": "/wd/hub",
       "silent": true,
       "screenshots" : {
         "enabled" : true,
-        "path" : "reports/nightwatch/screenshots"
+        "path" : "tools/nightwatch/reports/screenshots"
       },
       "desiredCapabilities" : {
         "browserName" : "chrome",
@@ -43,6 +43,16 @@
         "chromeOptions": {
           "args":["disable-web-security", "ignore-certificate-errors"]
         }
+      }
+    },
+    "chrome" : {
+      "desiredCapabilities": {
+        "browserName": "chrome"
+      }
+    },
+    "edge" : {
+      "desiredCapabilities": {
+        "browserName": "MicrosoftEdge"
       }
     }
   }

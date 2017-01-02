@@ -11,6 +11,7 @@ module.exports = function (config) {
     clientPath + '/modules/**/*.js'
   ]
   var files = dependencyFiles.concat(srcFiles)
+
   var configuration = {
     customLaunchers: {
       Chrome_travis_ci: {
