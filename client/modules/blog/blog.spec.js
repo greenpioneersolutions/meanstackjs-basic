@@ -4,6 +4,7 @@ describe('BLOG Testing', function () {
   describe('routes', function () {
     var states = {}
     beforeEach(inject(function ($state) {
+      this.timeout(1000)
       states.list = $state.get('list')
       states.view = $state.get('view')
       states.create = $state.get('create')
@@ -93,6 +94,8 @@ describe('BLOG Testing', function () {
       $location = _$location_
       $httpBackend.when('GET', /\/api\/authenticate\?noCache=\d+/)
         .respond(200, authResponse)
+      $httpBackend.when('GET', /\/api\/seo\/*/)
+        .respond(200, {})
       $httpBackend.when('GET', /modules\/\w+\/(\d|\w)+\.view\.html\?noCache=\d+/)
         .respond(200, '')
       var $scope = $rootScope.$new()

@@ -3,15 +3,15 @@ var HtmlReporter = require('nightwatch-html-reporter')
 var path = require('path')
 var reporter = new HtmlReporter({
   openBrowser: true,
-  reportsDirectory: path.join(__dirname, '../reports/nightwatch'),
-  /* The filename that the html report will be saved as. */
+  reportsDirectory: path.join(__dirname, '../tools/nightwatch/reports'),
+  // The filename that the html report will be saved as.
   reportFilename: 'index.html',
 
-  /* The theme that will be used to generate the html report.
-      This should match a directory under the lib/themes directory. */
+  // The theme that will be used to generate the html report.
+  // This should match a directory under the lib/themes directory.
   themeName: 'default',
 
-  /* If true then only errors will be shown in the report. */
+  // If true then only errors will be shown in the report.
   hideSuccess: false
 })
 module.exports = {
@@ -34,10 +34,10 @@ module.exports = {
 
   // controls the timeout time for async hooks. Expects the done() callback to be invoked within this time
   // or an error is thrown
-  asyncHookTimeout: 10000,
+  asyncHookTimeout: 20000,
 
   before: function (done) {
-    var MeanLite = require('../server.js')
+    var MeanLite = require('../server.mean.js')
     var server = new MeanLite({}, function (err) {
       if (err) {
         console.error('Error during ' + server.settings.title + ' startup. Abort.')
